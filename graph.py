@@ -3,13 +3,20 @@ import datetime as dt
 
 class Node:
     def __init__(
-        self, type: str, source: str, origin_node_id: str, trust: str, value: str
+        self,
+        type: str,
+        source: str,
+        origin_node_id: str,
+        trust: str,
+        value: str,
+        extra_data=None,
     ):
         self.type = type
         self.source = source
         self.origin_node_id = origin_node_id
         self.trust = trust
         self.value = value
+        self.extra_data = extra_data
         self.nod_id = type.strip().lower() + ":" + value.strip().lower()
         self.timestamp = dt.datetime.now().strftime("%Y_%m_%d-%H_%M")
         self.node_relations = []
@@ -53,18 +60,3 @@ class Graph:
                     )
                     print(response)
                     shown_relations.append(r)
-
-
-if __name__ == "__main__":
-    node1 = Node("Dominio", "UserInput", "UserInput", "Alta", "google.com")
-    node2 = Node("Subdominio", "DNSResolver", node1.nod_id, "Alta", "mail.google.com")
-    node3 = Node("IP", "whois", node2.nod_id, "Media", "142.250.200.133")
-
-    graphG = Graph()
-    graphG.add_node(node1)
-    graphG.add_node(node2)
-    graphG.add_node(node3)
-    graphG.add_relation(node1.nod_id, node2.nod_id, "TIENE_SUBDOMINIO")
-    graphG.add_relation(node2.nod_id, node3.nod_id, "RESUELVE_A")
-
-    graphG.show_graph()

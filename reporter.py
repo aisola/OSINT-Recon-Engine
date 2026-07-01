@@ -1,7 +1,7 @@
 import json
 
 
-def importToJson(graph: object, nombre_archivo):
+def to_json(graph: object, nombre_archivo):
     graph_dict = {}
     for n in graph.nodes:
         n_relations = []

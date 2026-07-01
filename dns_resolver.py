@@ -55,12 +55,3 @@ def resolver(domain_node) -> tuple[list, list]:
             continue
 
     return nodes, relations
-
-
-if __name__ == "__main__":
-    node1 = Node("Dominio", "UserInput", "UserInput", "Alta", "google.com")
-    nodes, relations = resolver(node1)
-    for n in nodes:
-        print(n.value)
-    for r in relations:
-        print(f"{r.origin_node_id} {r.type} {r.destination_node_id}")
