@@ -1,7 +1,9 @@
 import argparse
+import datetime
 
 import dns_resolver
 import graph
+import reporter
 
 parser = argparse.ArgumentParser(
     description="Herramienta para automatizar escaneos OSINT. Busca subdominios, resuelve IPs y grafica."
@@ -25,3 +27,9 @@ for r in relaciones:
     i += 1
 
 main_graph.show_graph()
+json_name = (
+    f"reporte_{dominio.value}-{datetime.datetime.now().strftime('%Y_%m_%d-%H%M')}"
+)
+reportStatus = reporter.importToJson(main_graph, json_name)
+if reportStatus:
+    print("Exportado con éxito")
