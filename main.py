@@ -1,20 +1,11 @@
 import argparse
 import datetime
 
+import asn_client
 import crtsh_client
 import dns_resolver
 import graph
 import reporter
-
-parser = argparse.ArgumentParser(
-    description="Herramienta para automatizar escaneos OSINT. Busca subdominios, resuelve IPs y grafica."
-)
-parser.add_argument("dominio", help="Dominio a escanear.")
-args = parser.parse_args()
-dominio = graph.Node("Dominio", "User Input", "User Input", "Alta", args.dominio)
-
-main_graph = graph.Graph()
-main_graph.add_node(dominio)
 
 
 def procesar_modulo(graph: object, nodes: list, relations: list, modulo: str):
@@ -25,16 +16,39 @@ def procesar_modulo(graph: object, nodes: list, relations: list, modulo: str):
     print(f"Modulo {modulo} procesado con éxito")
 
 
-nodes, relations = dns_resolver.resolver(dominio)
-procesar_modulo(main_graph, nodes, relations, "dns")
+parser = argparse.ArgumentParser(
+    description="Herramienta para automatizar escaneos OSINT. Busca subdominios, resuelve IPs y grafica."
+)
+grupo = parser.add_mutually_exclusive_group(required=True)
+grupo.add_argument("-d", "--dominio", help="Input de tipo 'Dominio'")
+grupo.add_argument("-i", "--ip", help="Input de tipo 'IP'")
+grupo.add_argument("-s", "--subdominio", help="Input de tipo 'Subdominio'")
 
-nodes, relations = crtsh_client.crtsh(dominio)
-procesar_modulo(main_graph, nodes, relations, "crt.sh")
+args = parser.parse_args()
 
+main_graph = graph.Graph()
+
+if args.dominio:
+    main_node = graph.Node("Dominio", "User Input", "User Input", "Alta", args.dominio)
+    main_graph.add_node(main_node)
+    nodes, relations = dns_resolver.resolver(main_node)
+    procesar_modulo(main_graph, nodes, relations, "dns_resolver")
+    nodes, relations = crtsh_client.crtsh(main_node)
+    procesar_modulo(main_graph, nodes, relations, "crt.sh")
+elif args.subdominio:
+    main_node = graph.Node(
+        "Subdominio", "User Input", "User Input", "Alta", args.subdominio
+    )
+    main_graph.add_node(main_node)
+elif args.ip:
+    main_node = graph.Node("IP", "User Input", "User Input", "Alta", args.ip)
+    main_graph.add_node(main_node)
+    nodes, relations = asn_client.asn_lookup(main_node)
+    procesar_modulo(main_graph, nodes, relations, "asn_lookup")
 
 main_graph.show_graph()
 json_name = (
-    f"reporte_{dominio.value}-{datetime.datetime.now().strftime('%Y_%m_%d-%H%M')}"
+    f"reporte_{main_node.value}-{datetime.datetime.now().strftime('%Y_%m_%d-%H%M')}"
 )
 reportStatus = reporter.to_json(main_graph, json_name)
 if reportStatus:

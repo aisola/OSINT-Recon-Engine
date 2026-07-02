@@ -2,7 +2,7 @@
 
 Herramienta OSINT basada en grafos para reconocimiento de infraestructura y superficie de ataque. Cada dato descubierto es un **nodo** y cada vínculo entre datos una **relación**, formando un grafo navegable y exportable.
 
-> **Estado:** Work in progress — MVP funcional (V2). En desarrollo activo como proyecto de aprendizaje.
+> **Estado:** Work in progress — MVP funcional (V3 en curso). En desarrollo activo como proyecto de aprendizaje.
 
 ---
 
@@ -40,15 +40,22 @@ Las herramientas OSINT tradicionales devuelven listas planas de datos sin conexi
 - [x] Nuevas relaciones: `EMITIDO_PARA`, `APARECE_EN`.
 - [x] Exportación a JSON (`reporter.py`).
 
+### V3 — Infraestructura y propiedad
+- [x] Módulo ASN lookup vía ip-api.com (`asn_client.py`).
+- [x] Nuevos tipos de nodo: `ASN`, `ISP`.
+- [x] Nuevas relaciones: `PERTENECE_A` (IP → ASN, ASN → ISP).
+- [x] Validación de tipo de nodo en todos los módulos (`NodeTypeError`).
+- [x] Flags de entrada: `-d` (dominio), `-i` (IP), `-s` (subdominio).
+- [ ] Módulo WHOIS / empresa.
+- [ ] Deduplicación y corroboración de nodos.
+
 ---
 
 ## Próximos pasos
 
-### V3 — Infraestructura y propiedad
-- [ ] Módulo ASN lookup.
+### V3 — Infraestructura y propiedad (cont.)
 - [ ] Módulo WHOIS / empresa.
-- [ ] Nuevos tipos de nodo: `ASN`, `Empresa`.
-- [ ] Nuevas relaciones: `PERTENECE_A`, `OPERADO_POR`.
+- [ ] Deduplicación de nodos por múltiples fuentes.
 
 ### V4 — Exportación para visualización
 - [ ] Exportación a GraphML.
@@ -61,15 +68,17 @@ Las herramientas OSINT tradicionales devuelven listas planas de datos sin conexi
 
 ## Uso
 
-Actualmente solo funciona con el tipo de dato "dominio"
 ```bash
-python main.py <dominio>
+python main.py -d <dominio>
+python main.py -i <ip>
+python main.py -s <subdominio>
 ```
 
 Ejemplo:
 
 ```bash
-python main.py ejemplo.com
+python main.py -d ejemplo.com
+python main.py -i 104.16.0.0
 ```
 
 Genera un reporte JSON con todos los nodos y relaciones descubiertos.
@@ -82,11 +91,12 @@ Cada módulo OSINT devuelve `tuple[list[Node], list[Relation]]` y se integra en 
 
 ```
 OSINT-Recon-Engine/
-├── graph.py          # Modelo de datos (Node, Relation, Graph)
+├── graph.py          # Modelo de datos (Node, Relation, Graph, NodeTypeError)
 ├── dns_resolver.py   # Resolución DNS + wordlist
 ├── crtsh_client.py   # Consulta a crt.sh
+├── asn_client.py     # ASN lookup vía ip-api.com
 ├── reporter.py       # Exportación a JSON
-└── main.py           # Orquestador
+└── main.py           # Orquestador con flags -d / -i / -s
 ```
 
 ---

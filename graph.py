@@ -1,6 +1,10 @@
 import datetime as dt
 
 
+class NodeTypeError(Exception):
+    pass
+
+
 class Node:
     def __init__(
         self,
@@ -11,7 +15,7 @@ class Node:
         value: str,
         extra_data=None,
     ):
-        self.type = type
+        self.type = type.strip().lower()
         self.source = source
         self.origin_node_id = origin_node_id
         self.trust = trust
