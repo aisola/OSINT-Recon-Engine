@@ -14,6 +14,7 @@ class Node:
         trust: str,
         value: str,
         extra_data=None,
+        validated_by: list[dict] = [],
     ):
         self.type = type.strip().lower()
         self.source = source
@@ -23,7 +24,7 @@ class Node:
         self.extra_data = extra_data
         self.nod_id = type.strip().lower() + ":" + value.strip().lower()
         self.timestamp = dt.datetime.now().strftime("%Y_%m_%d-%H_%M")
-        self.node_relations = []
+        self.node_relations = [{"source": source, "trust": trust}]
 
 
 class Relation:
@@ -39,9 +40,20 @@ class Graph:
         self.relations = []
 
     def add_node(self, Node):
+        if Node.nod_id in self.nodes:
+            self.nodes[Node.nod_id].validated_by.append(
+                {"source": Node.source, "trust": Node.trust}
+            )
         self.nodes[Node.nod_id] = Node
 
     def add_relation(self, origin_node_id, destination_node_id, type):
+        for r in self.relations:
+            if (
+                r.origin_node_id == origin_node_id
+                and r.destination_node_id == destination_node_id
+                and r.type == type
+            ):
+                return
         if origin_node_id in self.nodes and destination_node_id in self.nodes:
             relation = Relation(origin_node_id, destination_node_id, type)
             self.relations.append(relation)
