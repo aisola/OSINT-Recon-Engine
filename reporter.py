@@ -21,6 +21,8 @@ def to_json(graph: object, nombre_archivo):
             "trust": graph.nodes[n].trust,
             "value": graph.nodes[n].value,
             "timestamp": graph.nodes[n].timestamp,
+            "validated_by": graph.nodes[n].validated_by
+            "extra_data": grapg.nodes[n].extra_data
             "node_relations": n_relations,
         }
         graph_dict[n] = n_dict
