@@ -38,7 +38,7 @@ def whois_client(node) -> tuple[list, list]:
     for d in datos:
         d = d.strip()
         if d.startswith("Registrar WHOIS Server:"):
-            d_list = d.split(": ")
+            d_list = d.split(": ", 1)
             whois_server = d_list[1]
             break
 
@@ -59,11 +59,14 @@ def whois_client(node) -> tuple[list, list]:
         ]
         for f in fields:
             if d.startswith(f):
-                dato = d.split(": ")
+                dato = d.split(": ", 1)
                 datos_utiles[dato[0]] = dato[1]
                 break
     # print(datos_utiles)
-    if datos_utiles["Registrant Organization"]:
+    org = datos_utiles.get("Registrant Organization")
+    if not org:
+        return [], []
+    if org:
         nod_org = Node(
             "Empresa",
             "whois",

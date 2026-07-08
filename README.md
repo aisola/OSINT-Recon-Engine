@@ -46,16 +46,12 @@ Las herramientas OSINT tradicionales devuelven listas planas de datos sin conexi
 - [x] Nuevas relaciones: `PERTENECE_A` (IP → ASN, ASN → ISP).
 - [x] Validación de tipo de nodo en todos los módulos (`NodeTypeError`).
 - [x] Flags de entrada: `-d` (dominio), `-i` (IP), `-s` (subdominio).
-- [ ] Módulo WHOIS / empresa.
-- [ ] Deduplicación y corroboración de nodos.
+- [x] Módulo WHOIS con consulta en dos niveles: registry → registrar (`whois_client.py`).
+- [x] Nuevo tipo de nodo: `Empresa`.
+- [x] Nueva relación: `REGISTRADO_POR`.
+- [x] Deduplicación de nodos y relaciones en `Graph` (`validated_by`).
 
 ---
-
-## Próximos pasos
-
-### V3 — Infraestructura y propiedad (cont.)
-- [ ] Módulo WHOIS / empresa.
-- [ ] Deduplicación de nodos por múltiples fuentes.
 
 ### V4 — Exportación para visualización
 - [ ] Exportación a GraphML.
@@ -95,6 +91,7 @@ OSINT-Recon-Engine/
 ├── dns_resolver.py   # Resolución DNS + wordlist
 ├── crtsh_client.py   # Consulta a crt.sh
 ├── asn_client.py     # ASN lookup vía ip-api.com
+├── whois_client.py   # WHOIS lookup (registry + registrar)
 ├── reporter.py       # Exportación a JSON
 └── main.py           # Orquestador con flags -d / -i / -s
 ```

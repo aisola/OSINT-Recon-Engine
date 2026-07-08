@@ -41,9 +41,10 @@ class Graph:
 
     def add_node(self, node):
         if node.nod_id in self.nodes:
-            self.nodes[node.nod_id].validated_by.append(
-                {"source": node.source, "trust": node.trust}
-            )
+            validation = {"source": node.source, "trust": node.trust}
+            existing = self.nodes[node.nod_id]
+            if validation not in existing.validated_by:
+                existing.validated_by.append(validation)
             return
         self.nodes[node.nod_id] = node
 
