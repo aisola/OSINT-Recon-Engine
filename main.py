@@ -6,6 +6,7 @@ import crtsh_client
 import dns_resolver
 import graph
 import reporter
+import whois_client
 
 
 def procesar_modulo(graph: object, nodes: list, relations: list, modulo: str):
@@ -35,6 +36,8 @@ if args.dominio:
     procesar_modulo(main_graph, nodes, relations, "dns_resolver")
     nodes, relations = crtsh_client.crtsh(main_node)
     procesar_modulo(main_graph, nodes, relations, "crt.sh")
+    nodes, relations = whois_client.whois_client(main_node)
+    procesar_modulo(main_graph, nodes, relations, "whois")
 elif args.subdominio:
     main_node = graph.Node(
         "Subdominio", "User Input", "User Input", "Alta", args.subdominio

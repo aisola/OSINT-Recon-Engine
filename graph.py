@@ -40,12 +40,12 @@ class Graph:
         self.relations = []
 
     def add_node(self, node):
-        if Node.nod_id in self.nodes:
-            self.nodes[Node.nod_id].validated_by.append(
-                {"source": Node.source, "trust": Node.trust}
+        if node.nod_id in self.nodes:
+            self.nodes[node.nod_id].validated_by.append(
+                {"source": node.source, "trust": node.trust}
             )
             return
-        self.nodes[Node.nod_id] = Node
+        self.nodes[node.nod_id] = node
 
     def add_relation(self, origin_node_id, destination_node_id, type):
         for r in self.relations:
